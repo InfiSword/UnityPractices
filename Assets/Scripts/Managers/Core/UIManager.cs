@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class UIManager
@@ -86,6 +87,10 @@ public class UIManager
 
         if (_popupStack.Peek() != popup)
         {
+            foreach(UI_Popup p in _popupStack)
+            {
+                Debug.Log(p.gameObject.name);
+            }
             Debug.Log("Close Popup Failed!");
             return;
         }

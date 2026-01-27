@@ -41,15 +41,15 @@ public class Managers : MonoBehaviour
             if (go == null)
             {
                 go = new GameObject { name = "@Managers" };
-                //go.AddComponent<Managers>();
+                go.AddComponent<Managers>();
             }
 
             DontDestroyOnLoad(go);
             s_instance = go.GetOrAddComponent<Managers>();
 
-            //s_instance._data.Init();
-            //s_instance._pool.Init();
-            //s_instance._sound.Init();
+            s_instance._data.Init();
+            s_instance._pool.Init();
+            s_instance._sound.Init();
         }		
 	}
 

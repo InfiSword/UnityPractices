@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneManagerEx
 {
-    public BaseScene CurrentScene { get { return GameObject.FindObjectOfType<BaseScene>(); } }      // 현재 씬의 오브젝트를 가져온다
+    public BaseScene CurrentScene { get { return GameObject.FindFirstObjectByType<BaseScene>(); } }      // 현재 씬의 오브젝트를 가져온다
 
 	public void LoadScene(Define.Scene type)    // 씬타입의 매개변수
     {

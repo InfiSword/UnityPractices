@@ -8,7 +8,8 @@ public class UI_CanvasTest : UI_Popup
 {
     enum ButtonEnum
     {
-        ButtonTest,        
+        ButtonTest,
+        ButtonExpandInventory,        
     }
     enum ImageEnum
     {
@@ -16,10 +17,9 @@ public class UI_CanvasTest : UI_Popup
     }
 
     Button btn;
-    private void Start()
-    {
-        Init();
-    }
+    Button expandBtn;
+    private UI_Inven _inven;
+    
     public override void Init()
     {
         base.Init();
@@ -32,5 +32,35 @@ public class UI_CanvasTest : UI_Popup
             Debug.Log("Click");
         },
         Define.UIEvent.Click);
+
+        // 인벤토리 확장 버튼
+        expandBtn = GetButton((int)ButtonEnum.ButtonExpandInventory);
+        if (expandBtn != null)
+        {
+            expandBtn.gameObject.BindEvent((PointerEventData data) =>
+            {
+                ExpandInventory();
+            },
+            Define.UIEvent.Click);
+        }
+    }
+
+    private void ExpandInventory()
+    {
+        // 인벤토리 인스턴스 찾기
+        if (_inven == null)
+        {
+            _inven = FindFirstObjectByType<UI_Inven>();
+        }
+        
+        if (_inven != null)
+        {
+            _inven.ExpandInventory();
+            Debug.Log($"인벤토리 확장 완료. 현재 슬롯: {_inven.GetMaxSlots()}개");
+        }
+        else
+        {
+            Debug.LogWarning("인벤토리를 찾을 수 없습니다.");
+        }
     }
 }

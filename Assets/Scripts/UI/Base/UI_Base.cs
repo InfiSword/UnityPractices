@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public abstract class UI_Base : MonoBehaviour
 {
 	protected Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>();	// 딕셔너리를 통해 Bind에 들어온 타입과, 그 오브젝트들을 저장
+	
 	public abstract void Init();
 
 	protected void Bind<T>(Type type) where T : UnityEngine.Object				
@@ -55,6 +56,18 @@ public abstract class UI_Base : MonoBehaviour
 			case Define.UIEvent.Drag:			// 드래그일시
 				evt.OnDragHandler -= action;
 				evt.OnDragHandler += action;
+				break;
+			case Define.UIEvent.BeginDrag:		// 드래그 시작일시
+				evt.OnBeginDragHandler -= action;
+				evt.OnBeginDragHandler += action;
+				break;
+			case Define.UIEvent.EndDrag:		// 드래그 종료일시
+				evt.OnEndDragHandler -= action;
+				evt.OnEndDragHandler += action;
+				break;
+			case Define.UIEvent.Drop:			// 드롭일시
+				evt.OnDropHandler -= action;
+				evt.OnDropHandler += action;
 				break;
 		}
 	}
