@@ -2,7 +2,7 @@ using UnityEngine;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 /// <summary>
-/// 인벤토리 테스트를 위한 유틸리티 클래스 (에디터/개발 빌드 전용)
+/// 인벤토리 테스트를 위한 유틸리티 클래스 (에디터/개발 빌드에서만 작동)
 /// </summary>
 public static class InventoryTestUtility
 {
@@ -23,6 +23,9 @@ public static class InventoryTestUtility
         // 소모품 아이템 추가 (스택 테스트)
         AddTestConsumables(inventory);
         
+        // 음식 아이템 추가 (DataManager 스프라이트 사용)
+        AddTestFoodItems(inventory);
+        
         Debug.Log("[테스트] 인벤토리에 테스트 아이템을 추가했습니다.");
     }
 
@@ -33,7 +36,7 @@ public static class InventoryTestUtility
             WeaponItemData weapon = new WeaponItemData(
                 i + 1,
                 $"테스트 무기 {i + 1}",
-                $"테스트용 무기 아이템입니다. (ID: {i + 1})"
+                $"테스트용 무기입니다. (ID: {i + 1})"
             );
             weapon.stats = new WeaponStats
             {
@@ -48,10 +51,10 @@ public static class InventoryTestUtility
 
     private static void AddTestConsumables(UI_Inven inventory)
     {
-        // 포션 아이템 (스택 테스트용)
+        // 물약 아이템 (스택 테스트용)
         ConsumableItemData potion = new ConsumableItemData(
             100,
-            "체력 포션",
+            "체력 물약",
             "HP를 50 회복합니다."
         );
         potion.data = new ConsumableData
@@ -62,9 +65,45 @@ public static class InventoryTestUtility
             usage = "우클릭으로 사용"
         };
         
-        // 동일한 아이템을 여러 번 추가 (스택 테스트)
+        // 물약을 여러 번 추가 (스택 테스트)
         inventory.AddItem(potion, 5);
         inventory.AddItem(potion, 3);
+    }
+
+    /// <summary>
+    /// 음식 아이템 추가 (DataManager의 스프라이트 사용)
+    /// </summary>
+    private static void AddTestFoodItems(UI_Inven inventory)
+    {
+        // DataManager에서 음식 스프라이트 가져오기
+        for (int i = 0; i < 8; i++)
+        {
+            Sprite foodSprite = Managers.Data.GetFoodSpriteByIndex(i);
+            
+            if (foodSprite == null)
+            {
+                Debug.LogWarning($"[테스트] 음식{i} 스프라이트를 찾을 수 없습니다.");
+                continue;
+            }
+
+            ConsumableItemData food = new ConsumableItemData(
+                200 + i,
+                $"음식 {i}",
+                $"맛있는 음식입니다. (음식{i})"
+            );
+            
+            food.icon = foodSprite; // DataManager에서 로드한 스프라이트 설정
+            
+            food.data = new ConsumableData
+            {
+                effect = $"HP {10 + i * 5} 회복",
+                cooldown = 1.0f,
+                maxStack = 50,
+                usage = "클릭으로 섭취"
+            };
+            
+            inventory.AddItem(food, 1);
+        }
     }
 
     /// <summary>
@@ -75,7 +114,7 @@ public static class InventoryTestUtility
         EquipmentItemData armor = new EquipmentItemData(
             200,
             "테스트 갑옷",
-            "기본 방어구입니다."
+            "기본 갑옷입니다."
         );
         armor.stats = new EquipmentStats
         {
@@ -135,6 +174,37 @@ public static class InventoryTestUtility
                 break;
             }
         }
+    }
+
+    /// <summary>
+    /// 특정 음식 스프라이트로 아이템 생성 (개별 테스트용)
+    /// </summary>
+    public static ConsumableItemData CreateFoodItem(int foodIndex)
+    {
+        Sprite foodSprite = Managers.Data.GetFoodSpriteByIndex(foodIndex);
+        
+        if (foodSprite == null)
+        {
+            Debug.LogWarning($"[테스트] 음식{foodIndex} 스프라이트를 찾을 수 없습니다.");
+            return null;
+        }
+
+        ConsumableItemData food = new ConsumableItemData(
+            200 + foodIndex,
+            $"음식 {foodIndex}",
+            $"맛있는 음식입니다."
+        );
+        
+        food.icon = foodSprite;
+        food.data = new ConsumableData
+        {
+            effect = $"HP {10 + foodIndex * 5} 회복",
+            cooldown = 1.0f,
+            maxStack = 50,
+            usage = "클릭으로 섭취"
+        };
+        
+        return food;
     }
 }
 #endif

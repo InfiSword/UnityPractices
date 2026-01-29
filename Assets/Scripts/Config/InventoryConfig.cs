@@ -16,9 +16,6 @@ public static class InventoryConfig
     public const float DRAG_ALPHA = 0.5f;
     public const float NORMAL_ALPHA = 1.0f;
     
-    // 드래그 설정
-    public const bool DRAG_FROM_CENTER = true; // true: 아이템 중앙을 커서에 맞춤, false: 클릭 위치 유지
-    
     // 리소스 경로
     public const string SLOT_PREFAB_PATH = "UI/Popup/UI_Inven_Slot";
     public const string ITEM_PREFAB_PATH = "UI/Item/UI_Item";  // UI_Inven_Item → UI_Item

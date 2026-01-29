@@ -19,7 +19,6 @@ public class UI_Inven : UI_Popup
     private InventoryData _inventoryData;
     private UI_Item _draggedItem;
     private UI_ItemInfo _itemInfoPanel;
-
     public InventoryData InventoryData => _inventoryData;
 
     public override void Init()

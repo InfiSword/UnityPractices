@@ -26,10 +26,6 @@ public class UI_Item : UI_Base
     private Transform _originalParent;
     private RectTransform _rectTransform;
     private Canvas _rootCanvas;
-    private Vector2 _dragOffset;
-
-    // 드래그 모드 설정
-    [SerializeField] private bool _dragFromCenter = false; // true: 중앙 기준, false: 클릭 위치 기준
 
     public ItemData ItemData => _itemData;
     public int Quantity => _quantity;
@@ -42,9 +38,6 @@ public class UI_Item : UI_Base
         _itemImage = Get<GameObject>((int)GameObjects.Image_Item).GetComponent<Image>();
         _canvasGroup = Util.GetOrAddComponent<CanvasGroup>(gameObject);
         _rectTransform = GetComponent<RectTransform>();
-
-        // 드래그 모드 설정 적용
-        _dragFromCenter = InventoryConfig.DRAG_FROM_CENTER;
 
         // 드래그 이벤트 바인딩
         BindEvent(gameObject, OnBeginDrag, Define.UIEvent.BeginDrag);
@@ -145,25 +138,6 @@ public class UI_Item : UI_Base
         
         // 드래그 중인 아이템을 최상위로 이동
         transform.SetParent(_rootCanvas.transform);
-        
-        if (_dragFromCenter)
-        {
-            // 방법 1: 아이템 중앙을 마우스 커서에 맞춤 (오프셋 없음)
-            _dragOffset = Vector2.zero;
-        }
-        else
-        {
-            // 방법 2: 클릭한 위치를 기준으로 오프셋 유지
-            Vector2 localPointerPosition;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                _rootCanvas.transform as RectTransform,
-                eventData.position,
-                _rootCanvas.worldCamera,
-                out localPointerPosition
-            );
-            
-            _dragOffset = _rectTransform.anchoredPosition - localPointerPosition;
-        }
     }
 
     /// <summary>
@@ -174,7 +148,7 @@ public class UI_Item : UI_Base
         if (_itemData == null || _rootCanvas == null)
             return;
 
-        // 마우스 위치를 Canvas 로컬 좌표로 변환
+        // 마우스 위치를 Canvas 로컬 좌표로 변환하여 아이템 중앙에 배치
         Vector2 localPointerPosition;
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _rootCanvas.transform as RectTransform,
@@ -182,8 +156,7 @@ public class UI_Item : UI_Base
             _rootCanvas.worldCamera,
             out localPointerPosition))
         {
-            // 오프셋을 적용하여 위치 설정
-            _rectTransform.anchoredPosition = localPointerPosition + _dragOffset;
+            _rectTransform.anchoredPosition = localPointerPosition;
         }
     }
 
@@ -290,13 +263,5 @@ public class UI_Item : UI_Base
             return;
 
         _inven.ShowItemInfo(_itemData);
-    }
-    
-    /// <summary>
-    /// 드래그 모드 설정 (중앙 기준 / 클릭 위치 기준)
-    /// </summary>
-    public void SetDragFromCenter(bool fromCenter)
-    {
-        _dragFromCenter = fromCenter;
     }
 }
